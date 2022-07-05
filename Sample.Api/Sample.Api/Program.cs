@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
+using Sample.Api.Middlewares;
 using Sample.Api.SwaggerExamples.Requests;
 using Sample.Dal.Repositories;
 using Sample.Domain.Interfaces.Repositories;
@@ -27,6 +28,10 @@ builder.Services.AddScoped<IValueService, ValueService>();
 builder.Services.AddScoped<IFakeRepository, FakeRepository>();
 
 var app = builder.Build();
+
+app.UseMiddleware<LoggingMiddleware>();
+
+app.UseMiddleware<ErrorLoggingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
