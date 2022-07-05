@@ -1,3 +1,3 @@
 # Sample API
 
-This project in a sample API in .NET 6.
+This project is a sample API in .NET 6.
