@@ -17,9 +17,13 @@ namespace Sample.Api.Controllers;
 public class ValueController : ControllerBase
 {
     private readonly IValueService _valueService;
+    private readonly ILogger<ValueController> _logger;
 
-    public ValueController(IValueService valueService) =>
+    public ValueController(IValueService valueService, ILogger<ValueController> logger)
+    {
         _valueService = valueService;
+        _logger = logger;
+    }
 
     /// <summary>
     /// Get values
@@ -31,6 +35,8 @@ public class ValueController : ControllerBase
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetValuesAsync()
     {
+        _logger.Log(LogLevel.Information, "Get values called");
+
         var values = await _valueService.GetValuesAsync();
         return Ok(new ValuesResponse(values));
     }

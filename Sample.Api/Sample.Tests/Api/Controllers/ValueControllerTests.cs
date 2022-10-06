@@ -1,5 +1,6 @@
 ﻿using AutoFixture.Xunit2;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NFluent;
 using NSubstitute;
 using Sample.Api.Controllers;
@@ -13,9 +14,10 @@ public class ValueControllerTests
 {
     private readonly ValueController _valueController;
     private readonly IValueService _valueService = Substitute.For<IValueService>();
+    private readonly ILogger<ValueController> _logger = Substitute.For<ILogger<ValueController>>();
 
     public ValueControllerTests() =>
-        _valueController = new ValueController(_valueService);
+        _valueController = new ValueController(_valueService, _logger);
 
     [Theory, AutoData]
     public async Task Should_Get_Values(IEnumerable<Value> values)
