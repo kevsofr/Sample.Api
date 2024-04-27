@@ -1,5 +1,7 @@
 # Sample API
 
-This project is a sample API in .NET 7.
+This project is a sample API in .NET 8.
 
-To have an access token, you have to use authority : [Sample.IdentityProvicer](https://github.com/kevsofr/Sample.IdentityProvider)
+This API is secured by JWT authentication.
+
+To have an access token, you have to use authority : [Sample.IdentityProvider](https://github.com/kevsofr/Sample.IdentityProvider).
