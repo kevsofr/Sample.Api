@@ -1,14 +1,12 @@
-﻿using Sample.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Sample.Domain.Models;
 
 namespace Sample.Api.Dtos.Requests;
 
-public record UpdateValueRequest(string Name)
+public class UpdateValueRequest(string name)
 {
-    public bool IsValid() => !string.IsNullOrEmpty(Name);
+    [Required]
+    public string Name { get; private set; } = name;
 
-    public Value ToModel(int id) => new()
-    {
-        Id = id,
-        Name = Name
-    };
+    public Value ToModel(int id) => new(id, Name);
 }

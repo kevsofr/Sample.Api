@@ -3,18 +3,10 @@ using Microsoft.IO;
 
 namespace Sample.Api.Middlewares;
 
-public class LoggingMiddleware
+public class LoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
 {
-    private readonly RequestDelegate _requestDelegate;
-    private readonly ILogger _logger;
-    private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
-
-    public LoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
-    {
-        _requestDelegate = requestDelegate;
-        _logger = loggerFactory.CreateLogger<LoggingMiddleware>();
-        _recyclableMemoryStreamManager = new RecyclableMemoryStreamManager();
-    }
+    private readonly ILogger _logger = loggerFactory.CreateLogger<LoggingMiddleware>();
+    private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager = new();
 
     public async Task Invoke(HttpContext context)
     {
@@ -41,7 +33,7 @@ public class LoggingMiddleware
 
         var s = new Stopwatch();
         s.Start();
-        await _requestDelegate(context);
+        await requestDelegate(context);
         s.Stop();
 
         context.Response.Body.Seek(0, SeekOrigin.Begin);

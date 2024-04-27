@@ -3,22 +3,15 @@ using System.Text.Json;
 
 namespace Sample.Api.Middlewares;
 
-public class ErrorLoggingMiddleware
+public class ErrorLoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
 {
-    private readonly RequestDelegate _requestDelegate;
-    private readonly ILogger<ErrorLoggingMiddleware> _logger;
-
-    public ErrorLoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
-    {
-        _requestDelegate = requestDelegate;
-        _logger = loggerFactory.CreateLogger<ErrorLoggingMiddleware>();
-    }
+    private readonly ILogger<ErrorLoggingMiddleware> _logger = loggerFactory.CreateLogger<ErrorLoggingMiddleware>();
 
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _requestDelegate(context);
+            await requestDelegate(context);
         }
         catch (Exception e)
         {

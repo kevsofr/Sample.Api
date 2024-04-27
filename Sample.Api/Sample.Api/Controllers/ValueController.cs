@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sample.Api.Dtos;
 using Sample.Api.Dtos.Requests;
@@ -12,19 +13,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Sample.Api.Controllers;
 
+[Authorize("SampleApiPolicy")]
 [Route("api/values")]
 [ApiController]
-public class ValueController : ControllerBase
+public class ValueController(IValueService valueService, ILogger<ValueController> logger) : ControllerBase
 {
-    private readonly IValueService _valueService;
-    private readonly ILogger<ValueController> _logger;
-
-    public ValueController(IValueService valueService, ILogger<ValueController> logger)
-    {
-        _valueService = valueService;
-        _logger = logger;
-    }
-
     /// <summary>
     /// Get values
     /// </summary>
@@ -35,9 +28,9 @@ public class ValueController : ControllerBase
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetValuesAsync()
     {
-        _logger.Log(LogLevel.Information, "Get values called");
+        logger.Log(LogLevel.Information, "Get values called");
 
-        var values = await _valueService.GetValuesAsync();
+        var values = await valueService.GetValuesAsync();
         return Ok(new ValuesResponse(values));
     }
 
@@ -47,14 +40,14 @@ public class ValueController : ControllerBase
     /// <param name="id">Value id</param>
     /// <returns>Value</returns>
     [HttpGet]
-    [Route("{id}", Name = "Test")]
+    [Route("{id}")]
     [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ValueDto))]
     [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(ValueDtoExample))]
     [SwaggerResponse((int)HttpStatusCode.NotFound)]
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetValueByIdAsync([FromRoute] int id)
     {
-        var value = await _valueService.GetValueByIdAsync(id);
+        var value = await valueService.GetValueByIdAsync(id);
 
         if (value is null)
         {
@@ -77,13 +70,12 @@ public class ValueController : ControllerBase
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> CreateValueAsync([FromBody] CreateValueRequest request)
     {
-        if (request is null || !request.IsValid())
+        if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var value = await _valueService.CreateValueAsync(request.ToModel());
-
+        var value = await valueService.CreateValueAsync(request.ToModel());
         return StatusCode((int)HttpStatusCode.Created, new ValueDto(value));
     }
 
@@ -102,12 +94,12 @@ public class ValueController : ControllerBase
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> UpdateValueAsync([FromRoute] int id, [FromBody] UpdateValueRequest request)
     {
-        if (request is null || !request.IsValid())
+        if (!ModelState.IsValid)
         {
             return BadRequest();
         }
 
-        var value = await _valueService.UpdateValueAsync(request.ToModel(id));
+        var value = await valueService.UpdateValueAsync(request.ToModel(id));
 
         if (value is null)
         {
@@ -128,7 +120,7 @@ public class ValueController : ControllerBase
     [SwaggerResponse((int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> DeleteValueAsync([FromRoute] int id)
     {
-        var isDeleted = await _valueService.DeleteValueAsync(id);
+        var isDeleted = await valueService.DeleteValueAsync(id);
 
         if (!isDeleted)
         {

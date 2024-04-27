@@ -1,27 +1,15 @@
-﻿using Sample.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Sample.Domain.Models;
 
 namespace Sample.Api.Dtos.Requests;
 
-public record CreateValueRequest(int Id, string Name)
+public class CreateValueRequest(int id, string name)
 {
-    public bool IsValid()
-    {
-        if (Id == 0)
-        {
-            return false;
-        }
+    [Range(1, 1_000)]
+    public int Id { get; private set; } = id;
 
-        if (string.IsNullOrEmpty(Name))
-        {
-            return false;
-        }
+    [Required]
+    public string Name { get; private set; } = name;
 
-        return true;
-    }
-
-    public Value ToModel() => new()
-    {
-        Id = Id,
-        Name = Name
-    };
+    public Value ToModel() => new(Id, Name);
 }

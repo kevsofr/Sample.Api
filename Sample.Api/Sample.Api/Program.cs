@@ -1,52 +1,33 @@
-using System.Reflection;
-using Microsoft.OpenApi.Models;
-using Sample.Api.Middlewares;
-using Sample.Api.SwaggerExamples.Requests;
-using Sample.Dal.Repositories;
-using Sample.Domain.Interfaces.Repositories;
-using Sample.Domain.Interfaces.Services;
-using Sample.Domain.Services;
+using Sample.Api;
 using Serilog;
-using Swashbuckle.AspNetCore.Filters;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-builder.Logging.ClearProviders();
-var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-builder.Logging.AddSerilog(logger);
+Log.Information("Starting up");
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+try
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My sample API", Version = "v1" });
-    c.ExampleFilters();
+    var builder = WebApplication.CreateBuilder(args);
 
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
-builder.Services.AddSwaggerExamplesFromAssemblyOf<CreateValueRequestExample>();
-builder.Services.AddScoped<IValueService, ValueService>();
-builder.Services.AddScoped<IFakeRepository, FakeRepository>();
+    builder.Host.UseSerilog((ctx, lc) => lc
+        .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}")
+        .Enrich.FromLogContext()
+        .ReadFrom.Configuration(ctx.Configuration));
 
-var app = builder.Build();
+    var app = builder
+        .ConfigureServices()
+        .ConfigurePipeline();
 
-app.UseMiddleware<LoggingMiddleware>();
-
-app.UseMiddleware<ErrorLoggingMiddleware>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.Information("Shut down complete");
+    Log.CloseAndFlush();
+}

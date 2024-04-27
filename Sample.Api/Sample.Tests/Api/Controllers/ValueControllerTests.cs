@@ -62,6 +62,7 @@ public class ValueControllerTests
     public async Task Should_Not_Create_Value_And_Return_400_When_Bad_Request()
     {
         var request = new CreateValueRequest(1, string.Empty);
+        _valueController.ModelState.AddModelError(string.Empty, string.Empty);
 
         var response = await _valueController.CreateValueAsync(request);
 
@@ -82,6 +83,7 @@ public class ValueControllerTests
     public async Task Should_Not_Update_Value_And_Return_400_When_Bad_Request(int id)
     {
         var request = new UpdateValueRequest(string.Empty);
+        _valueController.ModelState.AddModelError(string.Empty, string.Empty);
 
         var response = await _valueController.UpdateValueAsync(id, request);
 

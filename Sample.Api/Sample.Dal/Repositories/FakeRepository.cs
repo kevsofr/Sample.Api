@@ -6,8 +6,8 @@ namespace Sample.Dal.Repositories;
 
 public class FakeRepository : IFakeRepository
 {
-    private static readonly IList<ValueEntity> Values = new List<ValueEntity>
-    {
+    private static readonly IList<ValueEntity> Values =
+    [
         new ValueEntity
         {
             Id = 100,
@@ -18,7 +18,7 @@ public class FakeRepository : IFakeRepository
             Id = 101,
             Name = "Fake 101"
         }
-    };
+    ];
 
     public async Task<Value?> GetValueByIdAsync(int id)
     {
@@ -29,22 +29,14 @@ public class FakeRepository : IFakeRepository
             return null;
         }
 
-        return new Value
-        {
-            Id  = entity.Id,
-            Name = entity.Name
-        };
+        return new Value(entity.Id, entity.Name);
     }
 
     public async Task<IEnumerable<Value>> GetValuesAsync()
     {
         var values = await Task.FromResult(Values);
 
-        return values.Select(v => new Value
-        {
-            Id = v.Id,
-            Name = v.Name
-        });
+        return values.Select(v => new Value(v.Id, v.Name));
     }
 
     public async Task<Value> CreateValueAsync(Value value)
@@ -77,11 +69,7 @@ public class FakeRepository : IFakeRepository
             return null;
         }
 
-        return new Value
-        {
-            Id = value.Id,
-            Name = value.Name
-        };
+        return new Value(value.Id, value.Name);
     }
 
     public async Task<bool> DeleteValueAsync(int id) =>
