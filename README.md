@@ -9,6 +9,8 @@ There are 4 endpoints :
 - PUT /api/values/{id} => Update a value
 - DELETE /api/values/{id} => Delete a value by id
 
+The data are persisted in a very simple in-memory storage.
+
 This API is secured by JWT authentication.
 
 To have an access token, you have to use authority : [Sample.IdentityProvider](https://github.com/kevsofr/Sample.IdentityProvider).
