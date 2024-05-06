@@ -76,7 +76,7 @@ public class ValueController(IValueService valueService, ILogger<ValueController
         }
 
         var value = await valueService.CreateValueAsync(request.ToModel());
-        return StatusCode((int)HttpStatusCode.Created, new ValueDto(value));
+        return CreatedAtAction(nameof(GetValueByIdAsync), new { value.Id }, value);
     }
 
     /// <summary>

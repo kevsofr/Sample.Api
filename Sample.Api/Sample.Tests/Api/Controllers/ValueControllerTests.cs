@@ -54,8 +54,7 @@ public class ValueControllerTests
 
         var response = await _valueController.CreateValueAsync(request);
 
-        Check.That(response).IsInstanceOf<ObjectResult>();
-        Check.That(((ObjectResult)response).StatusCode).IsEqualTo(201);
+        Check.That(response).IsInstanceOf<CreatedAtActionResult>();
     }
 
     [Fact]

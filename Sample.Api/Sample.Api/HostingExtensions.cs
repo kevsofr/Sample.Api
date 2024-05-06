@@ -14,7 +14,7 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options => options.SuppressAsyncSuffixInActionNames = false);
         builder.Services.AddAuthentication()
             .AddJwtBearer(options =>
             {
