@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Sample.Api.Middlewares;
 
-public class ErrorLoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
+internal class ErrorLoggingMiddleware(RequestDelegate requestDelegate, ILoggerFactory loggerFactory)
 {
     private readonly ILogger<ErrorLoggingMiddleware> _logger = loggerFactory.CreateLogger<ErrorLoggingMiddleware>();
 
