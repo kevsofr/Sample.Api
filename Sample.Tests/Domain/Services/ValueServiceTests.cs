@@ -6,7 +6,7 @@ using Sample.Domain.Dtos.Services;
 using Sample.Domain.Interfaces.Repositories;
 using Sample.Domain.Services;
 
-namespace Sample.Tests.Domain;
+namespace Sample.Tests.Domain.Services;
 
 public class ValueServiceTests
 {
