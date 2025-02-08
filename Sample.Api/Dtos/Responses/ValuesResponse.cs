@@ -1,8 +1,8 @@
-﻿using Sample.Domain.Models;
+﻿using Sample.Domain.Dtos.Services;
 
 namespace Sample.Api.Dtos.Responses;
 
-public record ValuesResponse(IEnumerable<ValueDto> Values)
+public record ValuesResponse(IEnumerable<ValueResponse> Values)
 {
-    public ValuesResponse(IEnumerable<Value> values) : this(values.Select(v => new ValueDto(v))) { }
+    public ValuesResponse(IEnumerable<ValueServiceDto> values) : this(values.Select(v => new ValueResponse(v))) { }
 }

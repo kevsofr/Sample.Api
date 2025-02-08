@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Sample.Api.Dtos;
 using Sample.Api.Dtos.Requests;
 using Sample.Api.Dtos.Responses;
 using Sample.Domain.Interfaces.Services;
@@ -17,7 +16,7 @@ public class ValueController(IValueService valueService, ILogger<ValueController
     [Produces("application/json")]
     [ProducesResponseType(typeof(ValuesResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetValuesAsync()
+    public async Task<ActionResult<ValuesResponse>> GetValuesAsync()
     {
         logger.Log(LogLevel.Information, "Get values called");
 
@@ -29,10 +28,10 @@ public class ValueController(IValueService valueService, ILogger<ValueController
     [Route("{id}")]
     [EndpointDescription("Get value by id")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ValueDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValueResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetValueByIdAsync([FromRoute] int id)
+    public async Task<ActionResult<ValueResponse>> GetValueByIdAsync([FromRoute] int id)
     {
         var value = await valueService.GetValueByIdAsync(id);
 
@@ -41,16 +40,16 @@ public class ValueController(IValueService valueService, ILogger<ValueController
             return NotFound();
         }
 
-        return Ok(new ValueDto(value));
+        return Ok(new ValueResponse(value));
     }
 
     [HttpPost]
     [EndpointDescription("Create a new value")]
     [Consumes(typeof(CreateValueRequest), "application/json")]
-    [ProducesResponseType(typeof(ValueDto), StatusCodes.Status201Created, "application/json")]
+    [ProducesResponseType(typeof(ValueResponse), StatusCodes.Status201Created, "application/json")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateValueAsync([FromBody] CreateValueRequest request)
+    public async Task<ActionResult<ValueResponse>> CreateValueAsync([FromBody] CreateValueRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -64,11 +63,11 @@ public class ValueController(IValueService valueService, ILogger<ValueController
     [HttpPut("{id}")]
     [EndpointDescription("Update a value by id")]
     [Consumes(typeof(UpdateValueRequest), "application/json")]
-    [ProducesResponseType(typeof(ValueDto), StatusCodes.Status200OK, "application/json")]
+    [ProducesResponseType(typeof(ValueResponse), StatusCodes.Status200OK, "application/json")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateValueAsync([FromRoute] int id, [FromBody] UpdateValueRequest request)
+    public async Task<ActionResult<ValueResponse>> UpdateValueAsync([FromRoute] int id, [FromBody] UpdateValueRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -82,7 +81,7 @@ public class ValueController(IValueService valueService, ILogger<ValueController
             return NotFound();
         }
 
-        return Ok(new ValueDto(value));
+        return Ok(new ValueResponse(value));
     }
 
     [HttpDelete("{id}")]

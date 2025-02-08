@@ -5,8 +5,8 @@ using NFluent;
 using NSubstitute;
 using Sample.Api.Controllers;
 using Sample.Api.Dtos.Requests;
+using Sample.Domain.Dtos.Services;
 using Sample.Domain.Interfaces.Services;
-using Sample.Domain.Models;
 
 namespace Sample.Tests.Api.Controllers;
 
@@ -20,23 +20,23 @@ public class ValueControllerTests
         _valueController = new ValueController(_valueService, _logger);
 
     [Theory, AutoData]
-    public async Task Should_Get_Values(IEnumerable<Value> values)
+    public async Task Should_Get_Values(IEnumerable<ValueServiceDto> values)
     {
         _valueService.GetValuesAsync().Returns(values);
 
         var response = await _valueController.GetValuesAsync();
 
-        Check.That(response).IsInstanceOf<OkObjectResult>();
+        Check.That(response.Result).IsInstanceOf<OkObjectResult>();
     }
 
     [Theory, AutoData]
-    public async Task Should_Get_Value_When_Value_Exists(int id, Value value)
+    public async Task Should_Get_Value_When_Value_Exists(int id, ValueServiceDto value)
     {
         _valueService.GetValueByIdAsync(id).Returns(value);
 
         var response = await _valueController.GetValueByIdAsync(id);
 
-        Check.That(response).IsInstanceOf<OkObjectResult>();
+        Check.That(response.Result).IsInstanceOf<OkObjectResult>();
     }
 
     [Theory, AutoData]
@@ -44,17 +44,17 @@ public class ValueControllerTests
     {
         var response = await _valueController.GetValueByIdAsync(id);
 
-        Check.That(response).IsInstanceOf<NotFoundResult>();
+        Check.That(response.Result).IsInstanceOf<NotFoundResult>();
     }
 
     [Theory, AutoData]
-    public async Task Should_Create_Value(CreateValueRequest request, Value value)
+    public async Task Should_Create_Value(CreateValueRequest request, ValueServiceDto value)
     {
         _valueService.CreateValueAsync(default!).ReturnsForAnyArgs(value);
 
         var response = await _valueController.CreateValueAsync(request);
 
-        Check.That(response).IsInstanceOf<CreatedAtActionResult>();
+        Check.That(response.Result).IsInstanceOf<CreatedAtActionResult>();
     }
 
     [Fact]
@@ -65,17 +65,17 @@ public class ValueControllerTests
 
         var response = await _valueController.CreateValueAsync(request);
 
-        Check.That(response).IsInstanceOf<BadRequestResult>();
+        Check.That(response.Result).IsInstanceOf<BadRequestResult>();
     }
 
     [Theory, AutoData]
-    public async Task Should_Update_Value(int id, UpdateValueRequest request, Value value)
+    public async Task Should_Update_Value(int id, UpdateValueRequest request, ValueServiceDto value)
     {
         _valueService.UpdateValueAsync(default!).ReturnsForAnyArgs(value);
 
         var response = await _valueController.UpdateValueAsync(id, request);
 
-        Check.That(response).IsInstanceOf<OkObjectResult>();
+        Check.That(response.Result).IsInstanceOf<OkObjectResult>();
     }
 
     [Theory, AutoData]
@@ -86,7 +86,7 @@ public class ValueControllerTests
 
         var response = await _valueController.UpdateValueAsync(id, request);
 
-        Check.That(response).IsInstanceOf<BadRequestResult>();
+        Check.That(response.Result).IsInstanceOf<BadRequestResult>();
     }
 
     [Theory, AutoData]
@@ -94,7 +94,7 @@ public class ValueControllerTests
     {
         var response = await _valueController.UpdateValueAsync(id, request);
 
-        Check.That(response).IsInstanceOf<NotFoundResult>();
+        Check.That(response.Result).IsInstanceOf<NotFoundResult>();
     }
 
     [Theory, AutoData]

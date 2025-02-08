@@ -1,6 +1,6 @@
 ﻿using Sample.Dal.Entities;
+using Sample.Domain.Dtos.Repositories;
 using Sample.Domain.Interfaces.Repositories;
-using Sample.Domain.Models;
 
 namespace Sample.Dal.Repositories;
 
@@ -20,7 +20,7 @@ public class FakeRepository : IFakeRepository
         }
     ];
 
-    public async Task<Value?> GetValueByIdAsync(int id)
+    public async Task<ValueRepositoryDto?> GetValueByIdAsync(int id)
     {
         var entity = await Task.FromResult(Values.SingleOrDefault(v => v.Id == id));
 
@@ -29,17 +29,17 @@ public class FakeRepository : IFakeRepository
             return null;
         }
 
-        return new Value(entity.Id, entity.Name);
+        return new ValueRepositoryDto(entity.Id, entity.Name);
     }
 
-    public async Task<IEnumerable<Value>> GetValuesAsync()
+    public async Task<IEnumerable<ValueRepositoryDto>> GetValuesAsync()
     {
         var values = await Task.FromResult(Values);
 
-        return values.Select(v => new Value(v.Id, v.Name));
+        return values.Select(v => new ValueRepositoryDto(v.Id, v.Name));
     }
 
-    public async Task<Value> CreateValueAsync(Value value)
+    public async Task<ValueRepositoryDto> CreateValueAsync(ValueRepositoryDto value)
     {
         await Task.Run(() => Values.Add(new ValueEntity
         {
@@ -50,7 +50,7 @@ public class FakeRepository : IFakeRepository
         return value;
     }
 
-    public async Task<Value?> UpdateValueAsync(Value value)
+    public async Task<ValueRepositoryDto?> UpdateValueAsync(ValueRepositoryDto value)
     {
         var entity = await Task.Run(() =>
         {
@@ -69,7 +69,7 @@ public class FakeRepository : IFakeRepository
             return null;
         }
 
-        return new Value(value.Id, value.Name);
+        return new ValueRepositoryDto(value.Id, value.Name);
     }
 
     public async Task<bool> DeleteValueAsync(int id) =>

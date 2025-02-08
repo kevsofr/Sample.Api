@@ -1,12 +1,12 @@
-﻿using Sample.Domain.Models;
+﻿using Sample.Domain.Dtos.Services;
 
 namespace Sample.Domain.Interfaces.Services;
 
 public interface IValueService
 {
-    Task<IEnumerable<Value>> GetValuesAsync();
-    Task<Value?> GetValueByIdAsync(int id);
-    Task<Value> CreateValueAsync(Value value);
-    Task<Value?> UpdateValueAsync(Value value);
+    Task<IEnumerable<ValueServiceDto>> GetValuesAsync();
+    Task<ValueServiceDto?> GetValueByIdAsync(int id);
+    Task<ValueServiceDto> CreateValueAsync(ValueServiceDto value);
+    Task<ValueServiceDto?> UpdateValueAsync(ValueServiceDto value);
     Task<bool> DeleteValueAsync(int id);
 }
