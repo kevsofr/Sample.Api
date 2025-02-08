@@ -36,6 +36,22 @@ public class CreateValueRequestTests
     }
 
     [Fact]
+    public void Should_Not_Valid_Request_When_Id_Greater_Than_1_000()
+    {
+        var validRequest = CreateValidRequest();
+        var request = new CreateValueRequest(1_001, validRequest.Name);
+        var validationContext = new ValidationContext(request);
+        var errors = new List<ValidationResult>();
+
+        var result = Validator.TryValidateObject(request, validationContext, errors, true);
+
+        Check.That(result).IsFalse();
+        Check.That(errors).HasSize(1);
+        Check.That(errors.Single().MemberNames).HasSize(1);
+        Check.That(errors.Single().MemberNames.Single()).IsEqualTo(nameof(CreateValueRequest.Id));
+    }
+
+    [Fact]
     public void Should_Not_Valid_Request_When_No_Name()
     {
         var validRequest = CreateValidRequest();
