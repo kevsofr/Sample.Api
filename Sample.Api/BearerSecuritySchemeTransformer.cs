@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Sample.Api;
 
@@ -12,9 +12,9 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
 
         if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
         {
-            var requirements = new Dictionary<string, OpenApiSecurityScheme>
+            var requirements = new Dictionary<string, IOpenApiSecurityScheme>
             {
-                ["Bearer"] = new()
+                ["Bearer"] = new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
                     Description = "Please enter a valid token",
@@ -27,7 +27,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
             var securityRequirement = new OpenApiSecurityRequirement
             {
                 {
-                    new()
+                    new OpenApiSecuritySchemeReference("Bearer")
                     {
                         Reference = new()
                         {
@@ -40,7 +40,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
             };
             document.Components ??= new OpenApiComponents();
             document.Components.SecuritySchemes = requirements;
-            document.SecurityRequirements.Add(securityRequirement);
+            document.Security = [securityRequirement];
         }
     }
 }
