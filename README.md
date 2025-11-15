@@ -1,6 +1,6 @@
 # Sample API
 
-This project is a sample API REST in .NET 9.
+This project is a sample API REST in .NET 10.
 
 There are 4 endpoints :
 - **GET /api/values** => Fetch all values
